@@ -24,14 +24,30 @@ $ sudo systemctl restart docker.service
 
 ## How to build docker image
 
+### ros-melodic
+
 ```bash
 $ ./docker/ros-bionic-melodic/build-docker-image.bash
 ```
 
+### ros2-foxy
+
+```bash
+$ ./docker/ros2-foxy-focal/build-docker-image.bash
+```
+
 ## How to launch
+
+### ros-melodic
 
 ```bash
 $ ./docker/ros-bionic-melodic/run-docker-container.bash
+```
+
+### ros2-foxy
+
+```bash
+$ ./docker/ros2-foxy-focal/run-docker-container.bash
 ```
 
 ## References
