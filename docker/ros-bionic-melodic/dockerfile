@@ -1,8 +1,8 @@
 FROM osrf/ros:melodic-desktop-full
 
 # Arguments
-ARG USER=t_chiku
-ARG GROUP=t_chiku
+ARG USER=initial
+ARG GROUP=initial
 ARG UID=1000
 ARG GID=${UID}
 ARG SHELL=/bin/bash
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget curl ssh \
     zsh terminator gnome-terminal git vim tig \
     dbus-x11 libglvnd0 libgl1 libglx0 libegl1 libxext6 libx11-6 \
-    x11-apps \
+    python-catkin-tools \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -39,7 +39,7 @@ RUN chmod 777 /entrypoint.bash
 # setup terminator config
 RUN mkdir -p /home/${USER}/.config/terminator
 COPY config/terminator/config /home/${USER}/.config/terminator
-RUN sudo chown ${USER}:${GROUP} /home/${USER}/.config/terminator/config
+RUN sudo chown -R ${USER}:${GROUP} /home/${USER}/.config
 
 # Switch user to ${USER}
 USER ${USER}
