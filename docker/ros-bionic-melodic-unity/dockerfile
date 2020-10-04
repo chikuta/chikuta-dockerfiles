@@ -1,0 +1,73 @@
+FROM osrf/ros:melodic-desktop-full
+
+# Arguments
+ARG USER=initial
+ARG GROUP=initial
+ARG UID=1000
+ARG GID=${UID}
+ARG SHELL=/bin/bash
+
+# Replace apt urls
+RUN sed -i 's@archive.ubuntu.com@ftp.jaist.ac.jp/pub/Linux@g' /etc/apt/sources.list
+
+# Install packages
+RUN apt-get update && apt install -y --no-install-recommends \
+    # for developments
+    wget curl ssh zsh terminator gnome-terminal git vim tig \
+    # for nvidia driver
+    dbus-x11 libglvnd0 libgl1 libglx0 libegl1 libxext6 libx11-6 \
+    # for ros install
+    python-catkin-tools \
+    # for unity build
+    nodejs-dev node-gyp libssl1.0-dev \
+    gconf-service lib32gcc1 lib32stdc++6 libasound2 libc6 libc6-i386 libcairo2 libcap2 libcups2 libdbus-1-3 \
+    libexpat1 libfontconfig1 libfreetype6 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libgl1-mesa-glx libgl1 libglib2.0-0 \
+    libglu1-mesa libglu1 libgtk2.0-0 libnspr4 libnss3 libpango1.0-0 libstdc++6 libx11-6 libxcomposite1 libxcursor1 \
+    libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxtst6 zlib1g debconf npm fuse nautilus \
+  && rm -rf /var/lib/apt/lists/*
+
+# install momodevelop
+RUN apt install apt-transport-https dirmngr \
+  && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
+  && echo "deb https://download.mono-project.com/repo/ubuntu vs-bionic main" | sudo tee /etc/apt/sources.list.d/mono-official-vs.list \
+  && sudo apt update && apt install -y --no-install-recommends monodevelop \
+  && rm -rf /var/lib/apt/lists/*
+
+# Env vars for the nvidia-container-runtime.
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES graphics,utility,compute
+
+# Setup users and groups
+RUN groupadd --gid ${GID} ${GROUP} \
+  && useradd --gid ${GID} --uid ${UID} -ms ${SHELL} ${USER} \
+  && mkdir -p /etc/sudoers.d \
+  && echo "${USER}:x:${UID}:${UID}:${USER},,,:$HOME:${shell}" >> /etc/passwd \
+  && echo "${USER}:x:${UID}:" >> /etc/group \
+  && echo "${USER} ALL=(ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${USER}" \
+  && chmod 0440 "/etc/sudoers.d/${USER}"
+
+# get untiy-hub
+RUN mkdir -p /opt/unity \
+  && wget -P /opt/unity https://public-cdn.cloud.unity3d.com/hub/prod/UnityHub.AppImage \
+  && chown -R ${USER}:${GID} /opt/unity && chmod +x /opt/unity/UnityHub.AppImage
+
+# copy entrypoint
+COPY entrypoint.bash /entrypoint.bash
+RUN chmod 777 /entrypoint.bash
+
+# setup terminator config
+RUN mkdir -p /home/${USER}/.config/terminator
+COPY config/terminator/config /home/${USER}/.config/terminator
+RUN sudo chown -R ${USER}:${GROUP} /home/${USER}/.config
+
+# Switch user to ${USER}
+USER ${USER}
+
+# Make SSH available
+EXPOSE 22
+
+# Switch to user's HOME folder
+WORKDIR /home/${USER}
+
+# CMD ["terminator"]
+ENTRYPOINT ["/entrypoint.bash", "terminator"]
