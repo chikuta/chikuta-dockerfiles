@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# get parameter from system
+user=`id -un`
+
 # start sharing xhost
 xhost +local:root
 
@@ -11,7 +14,8 @@ docker run --rm \
   --privileged \
   -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
   -v $HOME/.Xauthority:$docker/.Xauthority \
+  -v $HOME/work:$HOME/work \
   -e XAUTHORITY=$home_folder/.Xauthority \
   -e DISPLAY=$DISPLAY \
   -e QT_X11_NO_MITSHM=1 \
-  -it chikuta/ros-bionic-melodic
+  -it --name "ros-melodic" chikuta/ros-bionic-melodic

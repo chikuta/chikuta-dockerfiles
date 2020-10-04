@@ -9,7 +9,7 @@ uid=`id -u`
 gid=`id -g`
 
 # build docker images
-docker build -t chikuta/ros-bionic-melodic \
+docker build -t ${user}/ros-bionic-melodic \
     --build-arg USER=${user} \
     --build-arg UID=${uid} \
     --build-arg GROUP=${group} \
