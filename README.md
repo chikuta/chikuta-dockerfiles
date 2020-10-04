@@ -21,7 +21,7 @@ $ curl -s -L https://nvidia.github.io/nvidia-container-runtime/gpgkey | sudo apt
 $ distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
 $ curl -s -L https://nvidia.github.io/nvidia-container-runtime/$distribution/nvidia-container-runtime.list | sudo tee /etc/apt/sources.list.d/nvidia-container-runtime.list
 $ sudo apt update
-$ sudo apt install nvidia-container-runtime 
+$ sudo apt install nvidia-container-runtime
 ```
 
 After install nvidia container runtime, please restart docker service as follows.
@@ -38,6 +38,12 @@ $ sudo systemctl restart docker.service
 $ ./docker/ros-bionic-melodic/build-docker-image.bash
 ```
 
+### ros-melodic-unity
+
+```bash
+$ ./docker/ros-bionic-melodic-unity/build-docker-image.bash
+```
+
 ### ros2-foxy
 
 ```bash
@@ -50,6 +56,21 @@ $ ./docker/ros2-foxy-focal/build-docker-image.bash
 
 ```bash
 $ ./docker/ros-bionic-melodic/run-docker-container.bash
+```
+
+### ros-melodic-unity
+
+First launch terminator from host console.
+
+```bash
+$ ./docker/ros-bionic-melodic-unity/build-docker-image.bash
+```
+
+Next launch unity-hub from appimage as folllows.
+
+```bash
+$ cd /opt/unity
+$ ./UnityHub.AppImage
 ```
 
 ### ros2-foxy
