@@ -44,6 +44,12 @@ $ ./docker/ros-bionic-melodic/build-docker-image.bash
 $ ./docker/ros-bionic-melodic-unity/build-docker-image.bash
 ```
 
+### ros2-dashing
+
+```bash
+$ ./docker/ros2-dashing-bionic/build-docker-image.bash
+```
+
 ### ros2-foxy
 
 ```bash
@@ -71,6 +77,12 @@ Next launch unity-hub from appimage as folllows.
 ```bash
 $ cd /opt/unity
 $ ./UnityHub.AppImage
+```
+
+### ros2-dashing
+
+```bash
+$ ./docker/ros2-dashing-bionic/run-docker-container.bash
 ```
 
 ### ros2-foxy
