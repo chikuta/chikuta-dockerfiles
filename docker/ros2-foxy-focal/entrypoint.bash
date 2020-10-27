@@ -1,4 +1,4 @@
 #! /bin/bash
 
-source /opt/ros/melodic/setup.bash
+source /opt/ros/foxy/setup.bash
 exec $@
